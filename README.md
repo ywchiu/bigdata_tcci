@@ -6,14 +6,9 @@
 ### 切換成 root 使用者
 - $ su –
 
-### 使用visudo 編輯權限
-- $ visudo
+### 修改密碼
+- $ passwd
 
-### 給予sudo 權限 (於99行處)
-- hadoop ALL=(ALL) ALL
-
-### 啟用sudo 權限 
-- $ service sshd restart
 
 ### 關閉selinux
 - $ vi /etc/selinux/config
@@ -32,18 +27,17 @@
 
 ### 修改HOSTNAME
 - $ ifconfig
-- $ sudo vi /etc/hosts
-- $ sudo vi /etc/sysconfig/network
-- $ sudo hostname cmaster
+- $ vi /etc/hosts
+- $ vi /etc/sysconfig/network
+- $ hostname cmaster
 
 ### 重啟伺服器
-- $ sudo reboot
+- $ reboot
 
-### 安裝 Cloudera Manager
+### 安裝 Cloudera Manager (以root 登入)
 - $ wget http://archive.cloudera.com/cm5/installer/latest/cloudera-manager-installer.bin
 - $ chmod u+x cloudera-manager-installer.bin
 - $ sudo ./cloudera-manager-installer.bin
-
 
 
 ## 啟用Hadoop 機器
@@ -53,7 +47,7 @@
 ### 製作Parcels
 
 - http://archive.cloudera.com/cdh5/parcels/
-
+- 放置在 /opt/cloudera/parcel-repo
 
 
 
