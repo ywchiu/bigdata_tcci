@@ -13,29 +13,31 @@
 - hadoop ALL=(ALL) ALL
 
 ### 啟用sudo 權限 
-- sudo service sshd restart
+- $ service sshd restart
 
 ### 關閉selinux
-- $ sudo vi /etc/selinux/config
+- $ vi /etc/selinux/config
 - SELINUX = disabled
 
 ### 關閉防火牆
-- sudo setup
+- $ setup
+- $ chkconfig iptables off
 
 ### 設定NTP Server
-- sudo service ntpd start
+- $ service ntpd start
 
 ### 產生ssh key
-- ssh-keygen -t rsa
-- cat ~/.ssh/id_rsa.pub >> ~/.ssh/authroized_keys
+- $ ssh-keygen -t rsa
+- $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authroized_keys
 
 ### 修改HOSTNAME
-- sudo vi /etc/hosts
-- chkconfig iptables off
-- sudo vi /etc/sysconfig/network
+- $ ifconfig
+- $ sudo vi /etc/hosts
+- $ sudo vi /etc/sysconfig/network
+- $ sudo hostname cmaster
 
 ### 重啟伺服器
-- sudo reboot
+- $ sudo reboot
 
 ## 啟用Hadoop 機器
 
