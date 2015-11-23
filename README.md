@@ -3,6 +3,19 @@
 
 ## 啟用Cloudera Manager (獨立設置一台)
 
+### 切換成 root 使用者
+- $ su –
+
+### 使用visudo 編輯權限
+- $ visudo
+
+### 給予sudo 權限 (於99行處)
+hadoop ALL=(ALL) ALL
+
+### 啟動sudo  
+- $ sudo vi /etc/selinux/config
+- SELINUX = disabled
+
 ### 關閉selinux
 - $ sudo vi /etc/selinux/config
 - SELINUX = disabled
