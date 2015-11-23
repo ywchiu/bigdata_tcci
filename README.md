@@ -10,11 +10,10 @@
 - $ visudo
 
 ### 給予sudo 權限 (於99行處)
-hadoop ALL=(ALL) ALL
+- hadoop ALL=(ALL) ALL
 
-### 啟動sudo  
-- $ sudo vi /etc/selinux/config
-- SELINUX = disabled
+### 啟用sudo 權限 
+- sudo service sshd restart
 
 ### 關閉selinux
 - $ sudo vi /etc/selinux/config
