@@ -48,6 +48,12 @@
 
 ## 啟用Hadoop 機器
 
+- 使用帳號/密碼: admin/admin 登入
+
+### 製作Parcels
+
+- http://archive.cloudera.com/cdh5/parcels/
+
 
 
 
