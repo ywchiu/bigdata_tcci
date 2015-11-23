@@ -22,10 +22,6 @@
 ### 關閉防火牆
 - sudo setup
 
-### 修改 SWAP 設定
-- $ sudo vi /proc/sys/vm/swappiness
-- vm.swappiness=0
-
 ### 設定NTP Server
 - sudo service ntpd start
 
