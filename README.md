@@ -1,6 +1,12 @@
 # 台泥資訊Big Data 課程
 
 
+### Cloudera Pseudo Distributed Mode 安裝說明
+- https://www.youtube.com/watch?v=6WTbwb5mTSY
+- https://www.youtube.com/watch?v=OXUFHcCxgPk
+- https://www.youtube.com/watch?v=C_Pj-g5I60M
+- https://www.youtube.com/watch?v=5PW2jx0vmXM
+
 ## 啟用Cloudera Manager (獨立設置一台)
 
 ### 切換成 root 使用者
