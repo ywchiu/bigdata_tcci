@@ -1,0 +1,64 @@
+//Fetch ec.tar.gz website 
+wget https://github.com/ywchiu/hadoopscience2/raw/master/Recommend/ec.tar.gz
+
+//Untar ec.tar.gz
+tar -zxvf ec.tar.gz
+
+//Install python-pip
+sudo yum install python-pip
+
+//Install related python package
+sudo pip install django==1.4.5
+sudo pip install happybase
+
+//Create a postlog file under /tmp
+echo "" > /tmp/postlog.txt
+
+//Start ec website
+cd ec
+python manage.py runserver 127.0.0.1:11111
+
+//Reading log
+tail -f /tmp/postlog.txt
+
+//Fetch agent.properties
+wget https://github.com/ywchiu/hadoopscience2/raw/master/Recommend/agent.properties
+
+//Copy Flume
+sudo cp *.properties /etc/hadoop/conf
+
+//Start flume
+flume-ng agent --conf /etc/hadoop/conf --conf-file /etc/hadoop/conf/agent.properties --name agent
+
+//Examine hdfs
+hadoop fs -cat ecout/*
+
+//Fetch DataETL.pig
+wget https://github.com/ywchiu/hadoopscience2/raw/master/Recommend/DataETL.pig
+pig DataETL.pig
+
+//Add additional dataset
+wget https://github.com/ywchiu/hadoopscience2/raw/master/Recommend/small.csv
+hadoop fs -put small.csv  ecprocess
+
+//Fetch recommendation script
+wget https://github.com/ywchiu/hadoopscience2/raw/master/Recommend/small-recommend.sh
+sh small-recommend.sh
+
+//View recommend result
+hadoop fs -cat small_recommend/*
+
+//Restart HBase
+hbase shell
+> create 'mydata', 'mycf'
+
+sudo service zookeeper-server restart
+sudo env JAVA_HOME=/usr/java/jdk1.7.0_67-cloudera /usr/lib/hbase/bin/hbase-daemon.sh restart regionserver
+sudo service hbase-master restart
+http://localhost:60010
+
+//Fetch Hbase Insert command
+wget https://github.com/ywchiu/hadoopscience2/raw/master/Recommend/transfer.pig
+pig transfer.pig
+
+

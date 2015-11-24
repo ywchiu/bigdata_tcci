@@ -1,0 +1,38 @@
+// start up hive
+hive
+// this is an external table
+CREATE DATABASE page_view;
+CREATE EXTERNAL TABLE page_view_external(viewTime INT, userid BIGINT,page_url STRING, referrer_url STRING,ip STRING) COMMENT 'This is the EXTERNAL page view table' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '/user/cloudera/data/';
+
+DESC page_view_external;
+DESC EXTENDED page_view_external;
+
+
+// select data
+SELECT * FROM page_view_external;
+SELECT * FROM page_view_external WHERE page_url LIKE '%quicloud%';
+SELECT DISTINCT(page_url) FROM page_view_external WHERE page_url LIKE '%quicloud%';
+
+// this is an internal table
+CREATE TABLE page_view_internal(viewTime INT, userid BIGINT,page_url STRING, referrer_url STRING,ip STRING) COMMENT 'This is the INTERNAL page view table' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',';
+LOAD DATA LOCAL INPATH '/home/cloudera/page_view.csv' INTO TABLE page_view_internal;
+
+// validate that the data made it into hive
+SELECT * FROM page_view_internal;
+
+//View internal data from hdfs
+hadoop fs -ls /user/hive/warehouse/page_view_internal
+hadoop fs -ls /user/hive/warehouse/
+
+DESC EXTENDED page_view_internal;
+// notice tableType (MANAGED_TABLE)
+
+// Drop tables 
+SHOW TABLES;
+DROP TABLE page_view_internal;
+DROP TABLE page_view_external;
+SHOW TABLES;
+
+// View data in hdfs
+hadoop fs -ls /user/hive/warehouse/page_view_internal/
+hadoop fs -ls /user/cloudera/data/

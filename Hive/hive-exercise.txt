@@ -1,0 +1,47 @@
+//Get file from GitHub
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Hive/create-finance.sql
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Hive/finance.csv
+
+//Create finance database
+mysql -uroot -p -e 'create database finance' 
+
+//Create table MajorTrade
+mysql -uroot -p finance< create-finance.sql
+
+//Import finance.csv into MajorTrade
+mysql -uroot -p finance -e "LOAD DATA LOCAL INFILE 'finance.csv' INTO TABLE MajorTrade FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' (item, volume, value, date)"
+
+//Using sqoop to import data
+sqoop import --connect jdbc:mysql://localhost:3306/finance -username root -password cloudera --query "select * from MajorTrade where 1=1 and \$CONDITIONS" --hive-table majortrade --create-hive-table --hive-import --hive-home /user/hive/warehouse -m1 --target-dir majortrade
+
+//Entering hive
+hive
+
+//Making queries
+SELECT date, sum(value) as sum_val FROM MajorTrade group by date order by sum_val desc limit 1;
+
+//Making subqueries
+SELECT item, (sum(value) * 100 / t.total)  as percent 
+FROM MajorTrade 
+  CROSS  JOIN (
+      SELECT sum(value) AS total FROM MajorTrade
+  ) t 
+GROUP BY item, t.total;
+
+//Create table in hive
+create table item_portion (item String, portion float);
+
+//Insert data into item_portion
+INSERT INTO TABLE item_portion
+SELECT item, (sum(value) * 100 / t.total)  as percent 
+FROM MajorTrade 
+  CROSS  JOIN (
+      SELECT sum(value) AS total FROM MajorTrade
+  ) t 
+GROUP BY item, t.total;
+
+//Create table item_portion in finance
+mysql -uroot -p finance -e 'create table item_portion (item varchar(100), portion float)'
+
+//Using sqoop to export data back to mysql
+sqoop export --connect jdbc:mysql://localhost:3306/finance --table item_portion --export-dir /user/hive/warehouse/item_portion --username root -password cloudera -m1 --input-fields-terminated-by '\001'

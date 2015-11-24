@@ -1,0 +1,19 @@
+﻿//Retrieve log generator from GitHub
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Flume/log-generator.py
+
+//Use log-generator.py to generate log
+python log-generator.py
+
+//Examine generated file log
+tail -F /tmp/log-generator.log
+
+//Retrieve agent configs from GitHub
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Flume/agent2.properties
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Flume/agent1.properties
+
+//Start flume-1 agent and flume-2 agent
+flume-ng agent --conf-file agent2.properties --name agent2
+flume-ng agent --conf-file agent1.properties --name agent1
+
+//Examine running service
+netstat -tunlp | grep 5566

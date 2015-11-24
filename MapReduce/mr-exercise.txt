@@ -1,0 +1,1 @@
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar -file /home/cloudera/mapper.py -mapper /home/cloudera/mapper.py -file /home/cloudera/reducer.py -reducer /home/cloudera/reducer.py -input /user/cloudera/wordcount/* -output /user/cloudera/wordout

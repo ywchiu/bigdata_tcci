@@ -1,0 +1,23 @@
+// review the configs for 'agent1' & 'agent2', then copy the files
+cd ~/Flume/
+more agent1.properties
+more agent2.properties
+sudo cp *.properties /etc/hadoop/conf
+
+// create the HDFS directory which will store our flume data:
+hadoop fs -mkdir flume
+
+// start the log generator:
+~/log-generator.py
+
+// watch the output from the logs:
+tail -f /tmp/log-generator.log // every 5 seconds, you should see new entries
+
+// in same terminal as you ran the 'tail', start the downstream agent:
+flume-ng agent --conf /etc/hadoop/conf --conf-file /etc/hadoop/conf/agent2.properties --name agent2
+
+// start your upstream agent:
+flume-ng agent --conf /etc/hadoop/conf --conf-file /etc/hadoop/conf/agent1.properties --name agent1
+
+// try viewing the data in HDFS:
+hadoop fs -ls flume; date;

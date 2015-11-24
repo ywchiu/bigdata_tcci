@@ -1,0 +1,56 @@
+// load the mysql database with some data. We'll use the "world" database
+gunzip worldcitiespop.txt.gz
+
+// start up the mysql cli (when prompted for password, enter it):
+mysql -uroot -p -e "CREATE DATABASE world"
+
+// verify the database is there:
+mysql -uroot -p -e "SHOW DATABASES"
+
+// create the 'cities' table:
+mysql -uroot -p world < cities-create.sql
+
+// verify the table is there:
+mysql -uroot -p world -e "SHOW TABLES"
+
+// import the worldcities data into it:
+mysql -uroot -p world -e "LOAD DATA LOCAL INFILE 'worldcitiespop.txt' INTO TABLE cities FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (country, city_ascii, city, region, population, latitude, longitude)"
+
+// verify import with (should return 2 rows):
+mysql -uroot -p world -e "SELECT * FROM cities WHERE country ='ad'";
+
+// lets import 2000 city data into HDFS:
+//sqoop import --connect jdbc:mysql://localhost:3306/world -username root -P --table cities -target-dir /user/cloudera/world-cities -m1
+sqoop import --connect jdbc:mysql://localhost:3306/world -username root -P --query "select * from cities where 1=1 and \$CONDITIONS limit 2000" -target-dir /user/cloudera/world-cities -m1
+
+// verify the import worked:
+hadoop fs -tail /user/cloudera/world-cities/part-m-00000
+
+// Lets import some data now into Hive:
+//sqoop import --connect jdbc:mysql://localhost:3306/world -username root -P --table cities --hive-table cities_hive --create-hive-table --hive-import --hive-home /user/hive/warehouse -m 1
+sqoop import --connect jdbc:mysql://localhost:3306/world -username root -P --query "select * from cities where 1=1 and \$CONDITIONS limit 2000" --hive-table cities_hive --create-hive-table --hive-import --hive-home /user/hive/warehouse -m 1 --target-dir testhive
+// let's query some data out of this table in Hive:
+hive
+
+// now run the following commands from the hive prompt
+SHOW TABLES; // should return 'cities-hive'
+DESCRIBE EXTENDED cities_hive // note how sqoop made it a hive-managed table
+DESCRIBE cities_hive // note how sqoop brought over the column names & types
+CREATE TABLE ad_country (city STRING, state STRING, population BIGINT, latitude DOUBLE, longitude DOUBLE);
+INSERT OVERWRITE TABLE ad_country SELECT city,region, population,latitude,longitude FROM cities_hive WHERE country = 'ad';
+SHOW TABLES; // should now return the table above as well
+SELECT * FROM ad_country;
+// drop out of Hive cli:
+exit;
+
+// now, export our new table out of hive back into our MySQL database.
+// first, create the database in MySQL:
+mysql -uroot -p world -e "CREATE TABLE mysql_ad_country (city VARCHAR(30), state CHAR(2), population INT(10) unsigned, latitutde DECIMAL(10,6), longitude DECIMAL(10,6))";
+// verify our table creation:
+mysql -uroot -p world -e "describe mysql_ad_country";
+
+// now export our data from HDFS back into MySQL
+// note that "\001" is octal representation of ^A (what hive uses as default delimiter)
+sqoop export --connect jdbc:mysql://localhost/world --table mysql_ad_country  --export-dir /user/hive/warehouse/ad_country --username root --P -m 1 --input-fields-terminated-by '\001'
+// check that the data made it back into mysql:
+mysql -uroot -p world -e "SELECT * FROM mysql_ad_country";

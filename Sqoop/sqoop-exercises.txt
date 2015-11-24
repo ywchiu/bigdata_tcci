@@ -1,0 +1,42 @@
+//Download Yelp_All.zip from GitHub 
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Sqoop/Yelp_ALL.zip
+
+//Unzip Yelp_All.zip file with unzip command
+unzip Yelp_ALL.zip
+
+//Create yelp database in mysql
+mysql -uroot -p -e "CREATE DATABASE yelp"
+
+//Examine databases
+mysql -uroot -p -e "SHOW DATABASES"
+
+//Download create-ratings.sql from GitHub
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Sqoop/create-ratings.sql
+
+//Create ratings table in mysql
+mysql -uroot -p yelp < create-ratings.sql
+
+//List all tables in yelp database
+mysql -uroot -p yelp -e "SHOW TABLES"
+
+//Load ratings.txt from local file into "ratings" table
+mysql -uroot -p yelp -e "LOAD DATA LOCAL INFILE 'Yelp_ALL/ratings.txt' INTO TABLE ratings FIELDS TERMINATED BY '::' OPTIONALLY ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES (userid, itemid, ratings)"
+
+//Import ratings from mysql to HDFS
+//sqoop import --connect jdbc:mysql://localhost:3306/yelp -username root -P --table ratings -target-dir /sqoop/ratings -m1
+sqoop import --connect jdbc:mysql://localhost:3306/yelp -username root -password cloudera --query "select * from ratings where 1=1 and \$CONDITIONS limit 2000" -target-dir /user/cloudera/ratings -m1
+
+//Download create-ratings_tmp.sql from GitHub
+wget https://github.com/ywchiu/hadoopiii2/raw/master/Sqoop/create-ratings_tmp.sql
+
+//Create ratings_tmp table in mysql
+mysql -uroot -p yelp < create-ratings_tmp.sql
+
+//List tables in yelp database
+mysql -uroot -p yelp -e "SHOW TABLES"
+
+//Export data from HDFS to ratings_tmp
+sqoop export --connect jdbc:mysql://localhost:3306/yelp --table ratings_tmp --export-dir /user/cloudera/ratings --username root --P -m 1 --input-fields-terminated-by ','
+
+//Query data in ratings_tmp
+mysql -uroot -p yelp -e "select * from ratings_tmp limit 100"
