@@ -1,5 +1,7 @@
 # 台泥資訊Big Data 課程
 
+### Hadoop 投影片
+- https://www.slideshare.net/secret/xJiRFDhRRUNdnf
 
 ### Cloudera Pseudo Distributed Mode 安裝說明
 - https://www.youtube.com/watch?v=6WTbwb5mTSY
