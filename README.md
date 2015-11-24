@@ -6,6 +6,7 @@
 - https://www.youtube.com/watch?v=OXUFHcCxgPk
 - https://www.youtube.com/watch?v=C_Pj-g5I60M
 - https://www.youtube.com/watch?v=5PW2jx0vmXM
+[![Everything Is AWESOME](http://img.youtube.com/vi/StTqXEQ2l-Y/0.jpg)](https://www.youtube.com/watch?v=StTqXEQ2l-Y "Everything Is AWESOME")
 
 ## 啟用Cloudera Manager (獨立設置一台)
 
