@@ -4,11 +4,13 @@
 - https://www.slideshare.net/secret/xJiRFDhRRUNdnf
 - https://www.slideshare.net/secret/tVgkZ81J9ffyMu
 
+### Spark 投影片
+- https://www.slideshare.net/secret/B0NOrVku7yU4Y7
+
 ### Hadoop 環境
 - 192.168.204.59:7180
 - 192.168.204.59:8888
 - user01 ~ user30
-
 
 ### Cloudera Pseudo Distributed Mode 安裝說明
 - https://www.youtube.com/watch?v=6WTbwb5mTSY
