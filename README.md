@@ -6,6 +6,10 @@
 
 ### Spark 投影片
 - https://www.slideshare.net/secret/B0NOrVku7yU4Y7
+- https://www.slideshare.net/secret/AvEX3Fhz48qnfO
+
+### Ipython notebook
+- https://github.com/ywchiu/bigdata_tcci/blob/master/Spark_Advanced/20151215Demo.ipynb
 
 ### Hadoop 環境
 - 192.168.204.59:7180
